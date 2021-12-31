@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import Navbar from "./components/Navbar";
@@ -7,6 +7,9 @@ import Auth from "./components/Auth";
 import Profile from "./components/Profile";
 
 const App = () => {
+  useEffect(() => {
+    document.title = "Vigenesia";
+  }, []);
   return (
     <BrowserRouter>
       <Container>
