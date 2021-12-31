@@ -10,10 +10,13 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Input from "./InputProfile";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { edit_profile } from "../actions/profile";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -33,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = () => {
   const classes = useStyles();
-  const user = { data: { nama: "alinur", profesi: "dosen" } };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("profile"));
   const [formData, setFormData] = useState({
     nama: user?.data.nama,
     profesi: user?.data.profesi,
@@ -44,7 +49,11 @@ const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
   const handleShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    dispatch(edit_profile(formData, navigate("/")));
+  };
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -62,7 +71,9 @@ const Profile = () => {
         <Typography variant="h5">
           {editProfile ? "Edit Profile" : "Profile"}
         </Typography>
-        <Avatar className={classes.avatar}>{user?.data.nama.charAt(0)}</Avatar>
+        <Avatar className={classes.avatar}>
+          {user?.data?.nama?.charAt(0)}
+        </Avatar>
         <form
           className={classes.form}
           onSubmit={handleSubmit}

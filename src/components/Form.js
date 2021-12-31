@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../actions/posts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,11 +24,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const handleSubmit = () => {};
-const clear = () => {};
-
-const Form = () => {
+const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"));
+  const [postData, setPostData] = useState({ isi_motivasi: "" });
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p.id === currentId) : null
+  );
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (currentId) {
+      dispatch(updatePost(postData));
+    } else {
+      dispatch(createPost({ ...postData, iduser: user?.data.iduser }));
+    }
+
+    clear();
+  };
+  const clear = () => {
+    setCurrentId(null);
+    setPostData({ isi_motivasi: "" });
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -36,7 +59,9 @@ const Form = () => {
         noValidate
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Create Post</Typography>
+        <Typography variant="h6">
+          {setCurrentId ? "Editing Post" : "Create Post"}
+        </Typography>
 
         <TextField
           name="isi_motivasi"
@@ -45,8 +70,10 @@ const Form = () => {
           fullWidth
           multiline
           minRows={4}
-          value={undefined}
-          onChange={() => {}}
+          value={postData.isi_motivasi}
+          onChange={(e) =>
+            setPostData({ ...postData, isi_motivasi: e.target.value })
+          }
         />
 
         <Button

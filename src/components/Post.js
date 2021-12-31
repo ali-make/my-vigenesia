@@ -7,6 +7,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../actions/posts";
 
 const font = "'Pushster', cursive;";
 
@@ -35,13 +38,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = () => {
+const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
   return (
     <Card className={classes.card}>
       <div className={classes.infoCard}>
-        <Typography variant="body1">alinur</Typography>
-        <Typography variant="body2">2 day ago</Typography>
+        <Typography variant="body1">{}</Typography>
+        <Typography variant="body2">
+          {moment(post.tanggal_update).fromNow()}
+        </Typography>
       </div>
 
       <CardContent>
@@ -51,16 +58,24 @@ const Post = () => {
             variant="h5"
             gutterBottom
           >
-            &ldquo; Hello Guys? &rdquo;
+            &ldquo; {post.isi_motivasi} &rdquo;
           </Typography>
         </div>
       </CardContent>
 
       <CardActions className={classes.cardActions}>
-        <Button size="small" style={{ color: "red" }} onClick={() => {}}>
+        <Button
+          size="small"
+          style={{ color: "red" }}
+          onClick={() => dispatch(deletePost(post.id))}
+        >
           Delete
         </Button>
-        <Button size="small" color="primary" onClick={() => {}}>
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => setCurrentId(post.id)}
+        >
           Edit
         </Button>
       </CardActions>

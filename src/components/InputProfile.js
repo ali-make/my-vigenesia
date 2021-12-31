@@ -11,7 +11,7 @@ const InputProfile = ({
   handleShowPassword,
 }) => {
   return (
-    <Grid item sm={12}>
+    <Grid item sm={12} xs={12}>
       <TextField
         name={name}
         onChange={handleChange}

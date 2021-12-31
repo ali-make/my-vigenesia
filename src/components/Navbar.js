@@ -16,6 +16,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import { deepPurple } from "@material-ui/core/colors";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -66,7 +68,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
   const classes = useStyles();
-  const [user, setUser] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = (open) => (e) => {
     if (e.type === "keydown" && (e.key === "Tab" || e.key === "Shift")) {
@@ -76,7 +80,13 @@ const Navbar = () => {
     setIsOpen(open);
   };
 
-  const logout = () => {};
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+
+    navigate("/auth");
+
+    setUser(null);
+  };
 
   return (
     <AppBar className={classes.appBar} color="inherit" position="static">
@@ -92,8 +102,12 @@ const Navbar = () => {
       <Toolbar className={classes.toolbar}>
         {user ? (
           <>
-            <Avatar className={classes.purple}>{user.name.charAt(0)}</Avatar>
-            <Typography className={classes.userName}>{user.name}</Typography>
+            <Avatar className={classes.purple}>
+              {user?.data?.nama?.charAt(0)}
+            </Avatar>
+            <Typography className={classes.userName}>
+              {user?.data?.nama}
+            </Typography>
             <IconButton color="inherit" onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>
